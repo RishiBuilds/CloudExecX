@@ -1,0 +1,54 @@
+# ============================================================
+# CloudExecX — Root Docker Compose (Local Development)
+# ============================================================
+# Usage: docker-compose up --build
+# This starts the backend API, worker, and builds execution images.
+
+version: '3.8'
+
+services:
+  # ── Backend API Server ───────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - execution-images
+    restart: unless-stopped
+
+  # ── Worker Service ───────────────────────────────────────
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - WORKER_CONCURRENCY=2
+    volumes:
+      # Mount Docker socket so worker can spawn execution containers
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - execution-images
+    restart: unless-stopped
+
+  # ── Build Execution Images ──────────────────────────────
+  # This service just builds the sandbox images and exits.
+  execution-images:
+    image: docker:24-cli
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./docker/execution:/dockerfiles
+    command: >
+      sh -c "
+        docker build -t cloudexecx-python -f /dockerfiles/python.Dockerfile /dockerfiles &&
+        docker build -t cloudexecx-javascript -f /dockerfiles/javascript.Dockerfile /dockerfiles &&
+        docker build -t cloudexecx-cpp -f /dockerfiles/cpp.Dockerfile /dockerfiles &&
+        echo '✅ All execution images built successfully'
+      "

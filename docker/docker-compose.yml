@@ -1,0 +1,25 @@
+# ============================================================
+# CloudExecX — Execution Image Builder
+# ============================================================
+# Usage: docker-compose -f docker/docker-compose.yml build
+
+version: '3.8'
+
+services:
+  python-sandbox:
+    build:
+      context: ./execution
+      dockerfile: python.Dockerfile
+    image: cloudexecx-python
+
+  javascript-sandbox:
+    build:
+      context: ./execution
+      dockerfile: javascript.Dockerfile
+    image: cloudexecx-javascript
+
+  cpp-sandbox:
+    build:
+      context: ./execution
+      dockerfile: cpp.Dockerfile
+    image: cloudexecx-cpp

@@ -1,0 +1,25 @@
+{
+  "name": "cloudexecx-worker",
+  "version": "1.0.0",
+  "description": "CloudExecX Worker — BullMQ Job Processor",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "bullmq": "^5.0.0",
+    "dockerode": "^4.0.0",
+    "dotenv": "^16.4.0",
+    "ioredis": "^5.3.0",
+    "mongoose": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/dockerode": "^3.3.23",
+    "@types/node": "^20.11.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0"
+  }
+}

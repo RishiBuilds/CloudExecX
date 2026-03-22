@@ -1,0 +1,44 @@
+# ============================================================
+# CloudExecX — Render Blueprint
+# ============================================================
+# Deploy to Render with: render blueprint apply
+
+services:
+  # ── Backend API Server ───────────────────────────────────
+  - type: web
+    name: cloudexecx-backend
+    runtime: node
+    plan: free
+    buildCommand: cd backend && npm install && npm run build
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "4000"
+      - key: MONGODB_URI
+        sync: false
+      - key: UPSTASH_REDIS_URL
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
+    healthCheckPath: /api/health
+
+  # ── Worker Service ───────────────────────────────────────
+  - type: worker
+    name: cloudexecx-worker
+    runtime: docker
+    plan: free
+    dockerfilePath: ./worker/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: UPSTASH_REDIS_URL
+        sync: false
+      - key: WORKER_CONCURRENCY
+        value: "2"
