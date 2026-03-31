@@ -1,52 +1,66 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { ClerkProvider } from '@clerk/nextjs';
+import { Syne } from 'next/font/google';
+import { JetBrains_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import Navbar from '@/components/ui/Navbar';
 import '@/styles/globals.css';
 
+// ─── Fonts ───────────────────────────────────────────────────────────────────
+
+const syne = Syne({
+  subsets: ['latin'],
+  weight: ['400', '600', '700'],
+  variable: '--font-syne',
+  display: 'swap',
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-mono',
+  display: 'swap',
+});
+
+// ─── Metadata ────────────────────────────────────────────────────────────────
+
 export const metadata: Metadata = {
-  title: 'CloudExecX — Code Execution Platform',
+  title: {
+    default: 'CloudExecX — Code Execution Platform',
+    template: '%s · CloudExecX',
+  },
   description:
     'Write and execute code in isolated, secure Docker containers. Supports Python, JavaScript, and C++ with real-time output.',
   keywords: ['code execution', 'online compiler', 'docker', 'python', 'javascript', 'cpp'],
+  openGraph: {
+    title: 'CloudExecX — Code Execution Platform',
+    description: 'Isolated Docker sandboxes. Real-time output. Zero setup.',
+    type: 'website',
+  },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const viewport: Viewport = {
+  themeColor: '#080c10',
+};
+
+// ─── Layout ──────────────────────────────────────────────────────────────────
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider
-      appearance={{
-        variables: {
-          colorPrimary: '#7c3aed',
-          colorBackground: '#111118',
-          colorText: '#e2e8f0',
-          colorInputBackground: '#1a1a24',
-          colorInputText: '#e2e8f0',
-          borderRadius: '0.5rem',
-        },
-        elements: {
-          card: 'bg-[#111118] border border-[#1e293b]',
-          formButtonPrimary: 'bg-[#7c3aed] hover:bg-[#6d28d9]',
-        },
-      }}
-    >
-      <html lang="en" suppressHydrationWarning>
-        <head>
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link
-            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
-            rel="stylesheet"
-          />
-        </head>
-        <body className="min-h-screen antialiased">
+    // No global Clerk appearance here — each auth page owns its own theme.
+    // Keeping it here would create a conflict with the per-page overrides.
+    <ClerkProvider>
+      <html
+        lang="en"
+        className={`${syne.variable} ${jetbrainsMono.variable}`}
+        suppressHydrationWarning
+      >
+        <body className="min-h-screen bg-[#080c10] antialiased font-[var(--font-syne)]">
           <ThemeProvider
             attribute="class"
             defaultTheme="dark"
-            enableSystem
+            // No enableSystem — your design is dark-only.
+            // Allowing system override fights your hardcoded backgrounds.
             disableTransitionOnChange
           >
             <Navbar />
