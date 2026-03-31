@@ -1,0 +1,199 @@
+
+/*
+ * globals.css
+ *
+ * STRUCTURE
+ * ---------
+ *  1. Tailwind directives
+ *  2. Font variable wiring  → connects next/font CSS vars to Tailwind
+ *  3. CSS design tokens     → all theme values in one place
+ *  4. Theme-switch helper   → prevents transition flash on dark/light toggle
+ *  5. Base resets           → sensible defaults
+ */
+
+/* ── 1. Tailwind ──────────────────────────────────────────────────────────── */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── 2. Font variable wiring ─────────────────────────────────────────────── */
+/*
+ * next/font injects --font-display, --font-sans, --font-mono on <html>.
+ * These @layer base rules wire them into Tailwind's font-family utilities
+ * (font-sans, font-mono, font-display) via tailwind.config.ts.
+ * See tailwind.config.ts: theme.extend.fontFamily
+ */
+@layer base {
+  :root {
+    --font-sans-stack:    var(--font-sans),    'IBM Plex Sans',    system-ui, sans-serif;
+    --font-mono-stack:    var(--font-mono),    'JetBrains Mono',   'Courier New', monospace;
+    --font-display-stack: var(--font-display), 'Syne',             system-ui, sans-serif;
+  }
+}
+
+/* ── 3. CSS design tokens ────────────────────────────────────────────────── */
+/*
+ * All colour and surface values live here as CSS variables.
+ * Components reference these variables (e.g. var(--card-bg)) so that
+ * switching themes only requires updating values in one place.
+ *
+ * Naming convention:
+ *   --bg-*       → page/surface backgrounds
+ *   --text-*     → text colours
+ *   --border-*   → border colours
+ *   --brand-*    → primary brand colour (purple)
+ *   --accent-*   → secondary accent colour (teal/cyan)
+ */
+@layer base {
+  /* ── Dark theme (default) ──────────────────────────────────────────────── */
+  :root,
+  .dark {
+    /* Backgrounds */
+    --bg-primary:    #0d0d14;   /* deepest page background                  */
+    --bg-secondary:  #13131f;   /* card interiors, input backgrounds        */
+    --bg-hover:      #1a1a2e;   /* hover state for interactive surfaces     */
+
+    /* Cards */
+    --card-bg:       #111118;   /* card / modal background                  */
+
+    /* Borders */
+    --border-color:  #1e2a3a;   /* default border                           */
+
+    /* Text */
+    --text-primary:   #e2e8f0;  /* headings, body copy                      */
+    --text-secondary: #94a3b8;  /* secondary labels                         */
+    --text-muted:     #475569;  /* placeholders, disabled states            */
+
+    /* Brand — purple */
+    --brand-400: #a78bfa;
+    --brand-500: #7c3aed;
+    --brand-600: #6d28d9;
+
+    /* Accent — teal */
+    --accent-400: #34d399;
+    --accent-500: #10b981;
+    --accent-600: #059669;
+
+    /* Scrollbar */
+    --scrollbar-thumb: #1e2a3a;
+    --scrollbar-track: #0d0d14;
+  }
+
+  /* ── Light theme ───────────────────────────────────────────────────────── */
+  .light {
+    --bg-primary:    #f8fafc;
+    --bg-secondary:  #ffffff;
+    --bg-hover:      #f1f5f9;
+
+    --card-bg:       #ffffff;
+
+    --border-color:  #e2e8f0;
+
+    --text-primary:   #0f172a;
+    --text-secondary: #475569;
+    --text-muted:     #94a3b8;
+
+    /* Brand stays the same across themes */
+    --brand-400: #7c3aed;
+    --brand-500: #6d28d9;
+    --brand-600: #5b21b6;
+
+    --accent-400: #10b981;
+    --accent-500: #059669;
+    --accent-600: #047857;
+
+    --scrollbar-thumb: #cbd5e1;
+    --scrollbar-track: #f8fafc;
+  }
+}
+
+/* ── 4. Theme-switch transition suppression ──────────────────────────────── */
+/*
+ * PROBLEM: If CSS transitions are active when next-themes toggles the `class`
+ * attribute on <html>, every colour property animates from the old theme to
+ * the new one — causing a visible colour "slide" rather than an instant swap.
+ *
+ * WRONG FIX (what the original layout did): `disableTransitionOnChange={true}`
+ * on ThemeProvider kills ALL transitions site-wide including button hovers
+ * and modal animations.
+ *
+ * CORRECT FIX (used here): next-themes briefly adds a `.no-transitions` class
+ * to <html> during the theme switch. We suppress only the transition on that
+ * specific element and its children, then remove it. Everything else keeps
+ * working normally.
+ *
+ * To activate: pass `disableTransitionOnChange` to ThemeProvider (default
+ * behavior actually handles this automatically in next-themes ≥ 0.3).
+ * This CSS block is the companion rule that makes it precise.
+ */
+.no-transitions,
+.no-transitions * {
+  transition: none !important;
+}
+
+/* ── 5. Base resets ──────────────────────────────────────────────────────── */
+@layer base {
+  /* Smooth scrolling — respects prefers-reduced-motion */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* Body baseline */
+  body {
+    font-family: var(--font-sans-stack);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    /* Improve font rendering on macOS */
+    -webkit-font-smoothing:  antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Code / pre blocks use the mono stack */
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(--font-mono-stack);
+  }
+
+  /* Custom scrollbar — WebKit only, degrades gracefully */
+  ::-webkit-scrollbar {
+    width:  8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background:    var(--scrollbar-thumb);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--border-color);
+  }
+
+  /* Focus ring — visible for keyboard users, invisible for mouse */
+  :focus-visible {
+    outline:        2px solid var(--brand-500);
+    outline-offset: 2px;
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* Selection colour */
+  ::selection {
+    background-color: rgb(124 58 237 / 0.3); /* brand-500 at 30% */
+    color:            var(--text-primary);
+  }
+}

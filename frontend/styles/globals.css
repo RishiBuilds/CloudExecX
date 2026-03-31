@@ -1,5 +1,24 @@
 @import "tailwindcss";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: var(--font-syne), system-ui, sans-serif;
+    background-color: #080c10;
+    color: #f0f4f8;
+  }
+
+  code,
+  pre,
+  kbd,
+  samp {
+    font-family: var(--font-mono), monospace;
+  }
+}
+
 /* ============================================================
    CloudExecX — Global Styles & Design System (Tailwind v4)
    ============================================================ */
