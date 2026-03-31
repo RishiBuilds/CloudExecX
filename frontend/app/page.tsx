@@ -1,186 +1,301 @@
 'use client';
 
+import { ElementType } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Terminal, Shield, Zap, Layers, Code2, ArrowRight } from 'lucide-react';
+import { Shield, Zap, Layers, Code2 } from 'lucide-react';
 
-const features = [
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const FEATURES: Array<{
+  icon: ElementType;
+  title: string;
+  detail: string;
+  sub: string;
+  badge?: string;
+}> = [
   {
-    icon: <Code2 className="w-6 h-6" />,
-    title: 'Multi-Language Support',
-    description: 'Write and execute Python, JavaScript, and C++ with a VS Code-like editor experience.',
+    icon: Code2,
+    title: 'Multi-language',
+    detail: 'Python · JS · C++',
+    sub: 'More coming soon',
   },
   {
-    icon: <Shield className="w-6 h-6" />,
-    title: 'Secure Sandboxing',
-    description: 'Every execution runs in an isolated Docker container with no network access and strict resource limits.',
+    icon: Shield,
+    title: 'Docker sandboxed',
+    detail: 'No network access',
+    sub: 'Strict resource limits',
   },
   {
-    icon: <Zap className="w-6 h-6" />,
-    title: 'Lightning Fast',
-    description: 'Queue-based processing with configurable workers ensures rapid code execution and auto-scaling.',
+    icon: Zap,
+    title: 'Queue-based',
+    detail: 'BullMQ + Upstash',
+    sub: 'Auto-scaling workers',
   },
   {
-    icon: <Layers className="w-6 h-6" />,
-    title: '100% Free Tier',
-    description: 'Built entirely on free-tier services — Vercel, Render, Upstash Redis, MongoDB Atlas, and Clerk.',
+    icon: Layers,
+    title: '100% free tier',
+    detail: 'Vercel · Render',
+    sub: 'Atlas · Clerk',
+    badge: '$0/mo',
   },
 ];
 
-const container = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.3 },
-  },
+const STATS: Array<{
+  value: string;
+  label: string;
+  accent?: boolean;
+}> = [
+  { value: '3',       label: 'languages' },
+  { value: '<500ms',  label: 'avg exec time' },
+  { value: '$0',      label: 'forever', accent: true },
+];
+
+// ─── Animation variants ───────────────────────────────────────────────────────
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 16 },
+  show:   { opacity: 1, y: 0,  transition: { duration: 0.5, ease: 'easeOut' } },
 };
 
-const item = {
-  hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+const stagger = {
+  hidden: {},
+  show:   { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
 };
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
   return (
-    <div className="relative overflow-hidden">
-      {/* Background Gradient Effects */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-accent-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-brand-400/5 rounded-full blur-3xl" />
-      </div>
+    <div className="relative bg-[#080c10] text-[#f0f4f8] overflow-hidden">
 
-      {/* Hero Section */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
+      {/* ── Background ── */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px)
+          `,
+          backgroundSize: '40px 40px',
+        }}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(0,255,136,0.06)_0%,transparent_70%)]" />
+
+      {/* ── Hero ── */}
+      <section className="relative z-10 max-w-[1100px] mx-auto px-6 lg:px-10 pt-20 pb-16 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+        {/* Left copy */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="text-center"
+          variants={stagger}
+          initial="hidden"
+          animate="show"
         >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-sm font-medium mb-8"
-          >
-            <Terminal className="w-4 h-4" />
-            Free & Open Source
+          {/* Eyebrow */}
+          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-3 py-1.5 border border-[#1a2a3a] rounded-full bg-[#0d1520] mb-7">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-pulse" />
+            <span className="font-mono text-[10px] text-[#4a6177] uppercase tracking-[0.8px]">
+              sandbox online
+            </span>
           </motion.div>
 
           {/* Heading */}
-          <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tight mb-6">
-            Execute Code
-            <br />
-            <span className="bg-gradient-to-r from-brand-400 via-brand-500 to-accent-400 bg-clip-text text-transparent">
-              In The Cloud
-            </span>
-          </h1>
+          <motion.h1
+            variants={fadeUp}
+            className="font-[var(--font-syne)] text-[52px] sm:text-[60px] lg:text-[64px] font-extrabold leading-[1.04] tracking-[-2.5px] mb-5"
+          >
+            Run code.<br />
+            <span className="text-[#00ff88]">No setup.</span><br />
+            Ever.
+          </motion.h1>
 
-          {/* Subtitle */}
-          <p className="max-w-2xl mx-auto text-lg sm:text-xl text-[var(--text-secondary)] mb-10">
-            Write Python, JavaScript, or C++ in a VS Code-like editor and run it
-            in secure, isolated Docker containers. Zero setup required.
-          </p>
+          {/* Subheading */}
+          <motion.p
+            variants={fadeUp}
+            className="font-mono text-[13px] text-[#4a6177] leading-[1.85] mb-9 max-w-[380px]"
+          >
+            Write Python, JS, or C++ in a Monaco editor.<br />
+            Execute in isolated Docker containers.<br />
+            See output in &lt;500ms.
+          </motion.p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* CTAs */}
+          <motion.div variants={fadeUp} className="flex items-center gap-3">
             <Link
               href="/sign-up"
-              className="group px-8 py-3.5 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-400 hover:to-brand-500 transition-all shadow-lg hover:shadow-[var(--shadow-glow-lg)] flex items-center gap-2"
+              className="group inline-flex items-center gap-2 px-6 py-3.5 bg-[#00ff88] text-[#080c10] rounded-[10px] font-[var(--font-syne)] text-sm font-bold tracking-[0.2px] hover:opacity-90 transition-opacity"
             >
-              Start Coding
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                <polygon points="3,2 13,8 3,14" fill="#080c10" />
+              </svg>
+              Start coding free
             </Link>
             <Link
               href="/sign-in"
-              className="px-8 py-3.5 rounded-xl text-base font-semibold border border-[var(--border-color)] hover:bg-[var(--bg-tertiary)] transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3.5 font-mono text-[12px] text-[#2a3f52] border border-[#1a2a3a] rounded-[10px] hover:text-[#4a6177] hover:border-[#2a3f52] transition-colors"
             >
-              Sign In
+              $ sign in
             </Link>
-          </div>
+          </motion.div>
+
+          {/* Stats */}
+          <motion.div
+            variants={fadeUp}
+            className="flex items-center gap-8 mt-10 pt-8 border-t border-[#1a2a3a]"
+          >
+            {STATS.map(({ value, label, accent }) => (
+              <div key={label}>
+                <div
+                  className={`font-[var(--font-syne)] text-[22px] font-extrabold tracking-[-1px] ${
+                    accent ? 'text-[#00ff88]' : 'text-[#f0f4f8]'
+                  }`}
+                >
+                  {value}
+                </div>
+                <div className="font-mono text-[10px] text-[#2a3f52] mt-0.5 uppercase tracking-[0.8px]">
+                  {label}
+                </div>
+              </div>
+            ))}
+          </motion.div>
         </motion.div>
 
-        {/* Code Preview */}
+        {/* Right: Code preview */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mt-20 max-w-4xl mx-auto"
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="bg-[#0d1520] border border-[#1a2a3a] rounded-2xl overflow-hidden"
         >
-          <div className="rounded-2xl border border-[var(--border-color)] overflow-hidden shadow-2xl bg-[var(--bg-editor)]">
-            {/* Fake Editor Title Bar */}
-            <div className="flex items-center gap-2 px-4 py-3 bg-[var(--bg-tertiary)] border-b border-[var(--border-color)]">
-              <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-red-500/70" />
-                <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
-                <div className="w-3 h-3 rounded-full bg-green-500/70" />
+          {/* Editor title bar */}
+          <div className="flex items-center justify-between px-4 py-3 bg-[#080c10] border-b border-[#1a2a3a]">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+            </div>
+            <span className="font-mono text-[11px] text-[#2a3f52]">fibonacci.py</span>
+            <span className="font-mono text-[9px] text-[#2a3f52] px-2 py-1 bg-[#0d1520] border border-[#1a2a3a] rounded">
+              Python 3.11
+            </span>
+          </div>
+
+          {/* Syntax-highlighted code */}
+          <div className="font-mono text-[12px] leading-[1.9] p-5 text-[#8ba5be]">
+            <div>
+              <span className="text-[#4a6177] select-none mr-4">1</span>
+              <span className="text-[#7dd3fc]">def </span>
+              <span className="text-[#00ff88]">fibonacci</span>
+              <span className="text-[#f0f4f8]">(n: int) -&gt; int:</span>
+            </div>
+            <div>
+              <span className="text-[#4a6177] select-none mr-4">2</span>
+              <span className="pl-6 inline-block">
+                <span className="text-[#7dd3fc]">if </span>
+                <span className="text-[#f0f4f8]">n &lt;= 1:</span>
+              </span>
+            </div>
+            <div>
+              <span className="text-[#4a6177] select-none mr-4">3</span>
+              <span className="pl-12 inline-block">
+                <span className="text-[#7dd3fc]">return </span>
+                <span className="text-[#f0f4f8]">n</span>
+              </span>
+            </div>
+            <div>
+              <span className="text-[#4a6177] select-none mr-4">4</span>
+              <span className="pl-6 inline-block">
+                <span className="text-[#7dd3fc]">return </span>
+                <span className="text-[#00ff88]">fibonacci</span>
+                <span className="text-[#f0f4f8]">(n-1) + </span>
+                <span className="text-[#00ff88]">fibonacci</span>
+                <span className="text-[#f0f4f8]">(n-2)</span>
+              </span>
+            </div>
+            <div className="mt-2">
+              <span className="text-[#4a6177] select-none mr-4">6</span>
+              <span className="text-[#00ff88]">print</span>
+              <span className="text-[#f0f4f8]">(</span>
+              <span className="text-[#00ff88]">fibonacci</span>
+              <span className="text-[#f0f4f8]">(10))</span>
+            </div>
+          </div>
+
+          {/* Output console */}
+          <div className="border-t border-[#1a2a3a] px-5 py-4 bg-[#080c10]">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+                  <rect x="1" y="1" width="14" height="14" rx="2" stroke="#00ff88" strokeWidth="1.5" />
+                  <path d="M4 8h8M4 5l3 3-3 3" stroke="#00ff88" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+                <span className="font-mono text-[9px] text-[#00ff88] uppercase tracking-[1px]">stdout</span>
               </div>
-              <span className="text-xs text-[var(--text-muted)] ml-2 font-mono">main.py</span>
+              <span className="font-mono text-[9px] text-[#2a3f52]">23ms · exit 0</span>
             </div>
-            {/* Fake Code */}
-            <div className="p-6 font-mono text-sm leading-relaxed">
-              <div><span className="text-brand-400">def</span> <span className="text-accent-400">fibonacci</span>(n):</div>
-              <div className="pl-6"><span className="text-brand-400">if</span> n &lt;= <span className="text-yellow-400">1</span>:</div>
-              <div className="pl-12"><span className="text-brand-400">return</span> n</div>
-              <div className="pl-6"><span className="text-brand-400">return</span> <span className="text-accent-400">fibonacci</span>(n - <span className="text-yellow-400">1</span>) + <span className="text-accent-400">fibonacci</span>(n - <span className="text-yellow-400">2</span>)</div>
-              <div className="mt-2"><span className="text-accent-400">print</span>(<span className="text-accent-400">fibonacci</span>(<span className="text-yellow-400">10</span>))</div>
-            </div>
-            {/* Fake Output */}
-            <div className="border-t border-[var(--border-color)] bg-[var(--console-bg)] p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-xs font-semibold text-emerald-400">OUTPUT</span>
-                <span className="text-xs text-[var(--text-muted)]">• 23ms</span>
-              </div>
-              <pre className="text-sm text-emerald-400 font-mono">55</pre>
-            </div>
+            <pre className="font-mono text-[13px] text-[#00ff88] m-0">55</pre>
           </div>
         </motion.div>
       </section>
 
-      {/* Features Section */}
-      <section className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: '-100px' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-        >
-          {features.map((feature) => (
-            <motion.div
-              key={feature.title}
-              variants={item}
-              className="group p-6 rounded-2xl border border-[var(--border-color)] bg-[var(--card-bg)] hover:border-brand-500/30 hover:shadow-[var(--shadow-glow)] transition-all duration-300"
-            >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500/10 to-brand-500/5 flex items-center justify-center text-brand-400 mb-4 group-hover:scale-110 transition-transform">
-                {feature.icon}
-              </div>
-              <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-              <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
-                {feature.description}
-              </p>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-[var(--border-color)] py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-[var(--text-muted)]">
-            © 2025 CloudExecX. Built with ❤️ on free-tier services.
+      {/* ── Features ── */}
+      <section className="relative z-10 max-w-[1100px] mx-auto px-6 lg:px-10 pb-24">
+        <div className="border-t border-[#1a2a3a] pt-14">
+          <p className="font-mono text-[10px] text-[#2a3f52] uppercase tracking-[2px] mb-10">
+            // why cloudexecx
           </p>
-          <div className="flex items-center gap-4 text-sm text-[var(--text-muted)]">
-            <span>Next.js</span>
-            <span>•</span>
-            <span>Docker</span>
-            <span>•</span>
-            <span>Redis</span>
-          </div>
+
+          {/* 4-column feature grid — joined borders like a table */}
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-80px' }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border border-[#1a2a3a] rounded-2xl overflow-hidden"
+            style={{ gap: '1px', background: '#1a2a3a' }}
+          >
+            {FEATURES.map(({ icon: Icon, title, detail, sub, badge }) => (
+              <motion.div
+                key={title}
+                variants={fadeUp}
+                className="relative bg-[#0d1520] p-7 group hover:bg-[#111d29] transition-colors duration-200"
+              >
+                {badge && (
+                  <div className="absolute top-3 right-3 px-2 py-1 bg-[#00ff88]/[0.08] border border-[#00ff88]/20 rounded-full">
+                    <span className="font-mono text-[9px] text-[#00ff88]">{badge}</span>
+                  </div>
+                )}
+                <div className="w-9 h-9 border border-[#1a2a3a] rounded-lg flex items-center justify-center mb-4 group-hover:border-[#00ff88]/20 transition-colors">
+                  <Icon className="w-4 h-4 text-[#00ff88]" />
+                </div>
+                <div className="font-[var(--font-syne)] text-[14px] font-bold text-[#f0f4f8] mb-2 tracking-[-0.3px]">
+                  {title}
+                </div>
+                <div className="font-mono text-[11px] text-[#2a3f52] leading-[1.7]">
+                  {detail}<br />{sub}
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer className="relative z-10 border-t border-[#1a2a3a] px-6 lg:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <span className="font-mono text-[11px] text-[#2a3f52]">© 2025 CloudExecX</span>
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-pulse" />
+          <span className="font-mono text-[10px] text-[#2a3f52]">all systems operational</span>
+        </div>
+        <div className="font-mono text-[11px] text-[#2a3f52] flex items-center gap-3">
+          <span>Next.js</span>
+          <span className="text-[#1a2a3a]">·</span>
+          <span>Docker</span>
+          <span className="text-[#1a2a3a]">·</span>
+          <span>Redis</span>
         </div>
       </footer>
+
     </div>
   );
 }
