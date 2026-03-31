@@ -282,7 +282,7 @@ export default function HomePage() {
 
       {/* ── Footer ── */}
       <footer className="relative z-10 border-t border-[#1a2a3a] px-6 lg:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <span className="font-mono text-[11px] text-[#2a3f52]">© 2025 CloudExecX</span>
+        <span className="font-mono text-[11px] text-[#2a3f52]">© 2026 CloudExecX</span>
         <div className="flex items-center gap-2">
           <span className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-pulse" />
           <span className="font-mono text-[10px] text-[#2a3f52]">all systems operational</span>

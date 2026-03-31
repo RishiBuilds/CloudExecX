@@ -1,9 +1,10 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Check, Terminal, Clock, AlertTriangle, Loader2 } from 'lucide-react';
+import { Copy, Check, Clock, AlertTriangle, Terminal, CheckCircle2, XCircle } from 'lucide-react';
 import { useState } from 'react';
-import { formatTime } from '@/lib/utils';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface OutputConsoleProps {
   stdout: string;
@@ -12,6 +13,69 @@ interface OutputConsoleProps {
   status: string;
   isLoading: boolean;
 }
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function formatExecTime(ms: number): string {
+  if (ms < 1000) return `${ms}ms`;
+  return `${(ms / 1000).toFixed(2)}s`;
+}
+
+/** Maps queue status strings to terminal-style labels */
+function statusLabel(status: string): string {
+  const map: Record<string, string> = {
+    queued:     '$ waiting in queue...',
+    processing: '$ executing...',
+    running:    '$ running...',
+  };
+  return map[status] ?? `$ ${status}...`;
+}
+
+/** Safely copies text, swallows clipboard permission errors */
+async function copyToClipboard(text: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// ─── Status pill ─────────────────────────────────────────────────────────────
+
+function StatusPill({ status }: { status: string }) {
+  if (!status || status === 'queued' || status === 'processing' || status === 'running') return null;
+
+  const config = {
+    completed: {
+      icon: <CheckCircle2 className="w-3.5 h-3.5" />,
+      label: 'completed',
+      className: 'text-[#00ff88] bg-[#00ff88]/[0.06] border-[#00ff88]/20',
+    },
+    failed: {
+      icon: <XCircle className="w-3.5 h-3.5" />,
+      label: 'failed',
+      className: 'text-red-400 bg-red-950/30 border-red-900/30',
+    },
+    timeout: {
+      icon: <Clock className="w-3.5 h-3.5" />,
+      label: 'timed out · 5s limit',
+      className: 'text-amber-400 bg-amber-950/20 border-amber-900/20',
+    },
+  } as const;
+
+  const c = config[status as keyof typeof config];
+  if (!c) return null;
+
+  return (
+    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border font-mono text-[11px] mt-3 ${c.className}`}>
+      {c.icon}
+      {c.label}
+    </div>
+  );
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function OutputConsole({
   stdout,
@@ -22,114 +86,153 @@ export default function OutputConsole({
 }: OutputConsoleProps) {
   const [copied, setCopied] = useState(false);
 
-  const output = stdout || stderr || '';
+  // Concatenate both streams for copy — original only copied stdout
+  const copyableOutput = [stdout, stderr].filter(Boolean).join('\n--- stderr ---\n');
+  const hasOutput = Boolean(stdout || stderr);
+  const isEmpty = !hasOutput && !isLoading && status === '';
 
-  const copyOutput = () => {
-    navigator.clipboard.writeText(output);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const handleCopy = async () => {
+    const ok = await copyToClipboard(copyableOutput);
+    if (ok) {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (
-    <div className="h-full flex flex-col rounded-xl overflow-hidden border border-[var(--border-color)] bg-[var(--console-bg)]">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-[var(--bg-tertiary)]">
-        <div className="flex items-center gap-2">
-          <Terminal className="w-4 h-4 text-brand-400" />
-          <span className="text-sm font-semibold text-[var(--text-primary)]">Output</span>
-          {executionTimeMs !== null && (
-            <span className="flex items-center gap-1 text-xs text-[var(--text-muted)]">
+    <div className="h-full flex flex-col rounded-xl overflow-hidden border border-[#1a2a3a] bg-[#080c10]">
+
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a2a3a] bg-[#0d1520] shrink-0">
+        <div className="flex items-center gap-2.5">
+          <Terminal className="w-3.5 h-3.5 text-[#00ff88]" />
+          <span className="font-mono text-[12px] font-semibold text-[#f0f4f8]">stdout</span>
+
+          {/* Execution time */}
+          {executionTimeMs !== null && !isLoading && (
+            <span className="flex items-center gap-1 font-mono text-[10px] text-[#2a3f52]">
               <Clock className="w-3 h-3" />
-              {formatTime(executionTimeMs)}
+              {formatExecTime(executionTimeMs)}
+            </span>
+          )}
+
+          {/* Live status indicator while running */}
+          {isLoading && (
+            <span className="flex items-center gap-1.5 font-mono text-[10px] text-[#2a3f52]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00ff88] animate-pulse" />
+              {status === 'queued' ? 'queued' : 'running'}
             </span>
           )}
         </div>
-        {output && (
+
+        {/* Copy button — only when there's something to copy */}
+        {hasOutput && (
           <button
-            onClick={copyOutput}
-            className="flex items-center gap-1.5 px-2 py-1 rounded-md text-xs text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)] transition-colors"
+            onClick={handleCopy}
+            className="flex items-center gap-1.5 px-2 py-1 rounded-md font-mono text-[10px] text-[#2a3f52] hover:text-[#8ba5be] hover:bg-[#1a2a3a] transition-colors"
           >
             {copied ? (
               <>
-                <Check className="w-3 h-3 text-emerald-400" />
-                <span className="text-emerald-400">Copied</span>
+                <Check className="w-3 h-3 text-[#00ff88]" />
+                <span className="text-[#00ff88]">copied</span>
               </>
             ) : (
               <>
                 <Copy className="w-3 h-3" />
-                Copy
+                copy
               </>
             )}
           </button>
         )}
       </div>
 
-      {/* Output Area */}
-      <div className="flex-1 overflow-auto p-4 font-mono text-sm">
+      {/* ── Body ── */}
+      <div className="flex-1 overflow-auto p-4 font-mono text-[12px] leading-[1.8]">
         <AnimatePresence mode="wait">
-          {isLoading ? (
+
+          {/* Loading state */}
+          {isLoading && (
             <motion.div
               key="loading"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col items-center justify-center h-full gap-3"
+              className="flex flex-col items-center justify-center h-full gap-4"
             >
-              <Loader2 className="w-8 h-8 text-brand-400 animate-spin" />
-              <span className="text-sm text-[var(--text-muted)]">
-                {status === 'queued' ? 'Waiting in queue...' : 'Executing code...'}
+              <div className="flex gap-1.5">
+                {[0, 1, 2].map((i) => (
+                  <span
+                    key={i}
+                    className="w-1.5 h-1.5 rounded-full bg-[#00ff88]/50 animate-pulse"
+                    style={{ animationDelay: `${i * 180}ms` }}
+                  />
+                ))}
+              </div>
+              <span className="font-mono text-[11px] text-[#2a3f52]">
+                {statusLabel(status)}
               </span>
             </motion.div>
-          ) : !output && status === '' ? (
+          )}
+
+          {/* Empty state */}
+          {isEmpty && (
             <motion.div
               key="empty"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex flex-col items-center justify-center h-full gap-2 text-[var(--text-muted)]"
+              className="flex flex-col items-center justify-center h-full gap-3"
             >
-              <Terminal className="w-10 h-10 opacity-30" />
-              <span className="text-sm">Run your code to see output here</span>
+              <div className="w-12 h-12 rounded-xl border border-[#1a2a3a] flex items-center justify-center">
+                <Terminal className="w-5 h-5 text-[#1a2a3a]" />
+              </div>
+              <div className="text-center">
+                <p className="font-mono text-[11px] text-[#2a3f52]">// no output yet</p>
+                <p className="font-mono text-[10px] text-[#1a2a3a] mt-1">press run to execute</p>
+              </div>
             </motion.div>
-          ) : (
+          )}
+
+          {/* Output */}
+          {!isLoading && hasOutput && (
             <motion.div
               key="output"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="space-y-2"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.15 }}
             >
               {/* stdout */}
               {stdout && (
-                <pre className="text-emerald-400 whitespace-pre-wrap break-words leading-relaxed">
+                <pre className="text-[#00ff88] whitespace-pre-wrap break-words leading-[1.8]">
                   {stdout}
                 </pre>
               )}
 
               {/* stderr */}
               {stderr && (
-                <div className="mt-2">
-                  <div className="flex items-center gap-1.5 mb-1">
-                    <AlertTriangle className="w-3.5 h-3.5 text-red-400" />
-                    <span className="text-xs font-semibold text-red-400">STDERR</span>
-                  </div>
-                  <pre className="text-red-400 whitespace-pre-wrap break-words leading-relaxed">
+                <div className={stdout ? 'mt-4' : ''}>
+                  {/* Only show the stderr label if there's also stdout — otherwise context is clear */}
+                  {stdout && (
+                    <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-[#1a2a3a]">
+                      <AlertTriangle className="w-3 h-3 text-red-400" />
+                      <span className="font-mono text-[9px] text-red-400 uppercase tracking-[1px]">
+                        stderr
+                      </span>
+                    </div>
+                  )}
+                  <pre className="text-red-400 whitespace-pre-wrap break-words leading-[1.8]">
                     {stderr}
                   </pre>
                 </div>
               )}
 
-              {/* Status badges */}
-              {status === 'timeout' && (
-                <div className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-orange-500/10 border border-orange-500/20">
-                  <Clock className="w-4 h-4 text-orange-400" />
-                  <span className="text-sm text-orange-400">
-                    Execution timed out (5 second limit)
-                  </span>
-                </div>
-              )}
+              {/* Status pill */}
+              <StatusPill status={status} />
             </motion.div>
           )}
+
         </AnimatePresence>
       </div>
+
     </div>
   );
 }
