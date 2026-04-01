@@ -60,8 +60,9 @@ export default function SignInPage() {
                 headerSubtitle: 'hidden',
                 header: 'hidden',
                 socialButtonsBlockButton:
-                  'w-full flex items-center justify-center gap-2.5 py-[11px] px-4 bg-[#111d29] border border-[#1a2a3a] rounded-[10px] text-[#8ba5be] font-semibold text-sm mb-2.5 hover:border-[#00ff88] hover:text-[#f0f4f8] transition-colors duration-200',
-                socialButtonsBlockButtonText: 'font-sans text-sm',
+                  'relative w-full flex items-center justify-center py-[11px] px-4 bg-[#111d29] border border-[#1a2a3a] rounded-[10px] text-[#8ba5be] font-semibold text-sm mb-2.5 hover:border-[#00ff88] hover:text-[#f0f4f8] transition-colors duration-200',
+                socialButtonsBlockButtonText: 'font-sans text-sm font-semibold !text-[#f0f4f8]',
+                socialButtonsProviderIcon: 'absolute left-4',
                 dividerRow: 'my-5',
                 dividerText: 'font-mono text-[10px] text-[#2a3f52] uppercase tracking-[1.5px]',
                 dividerLine: 'bg-[#1a2a3a]',
