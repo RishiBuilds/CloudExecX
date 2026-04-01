@@ -52,15 +52,12 @@ export async function processCodeExecution(job: Job<ExecutionJobData>): Promise<
   console.log(`🔄 Processing submission: ${submissionId} [${language}]`);
 
   try {
-    // ── Mark as Processing ────────────────────────────────
     await Submission.findByIdAndUpdate(submissionId, {
       status: 'processing',
     });
 
-    // ── Execute in Docker Container ───────────────────────
     const result = await executeInDocker(language, code);
 
-    // ── Determine Final Status ────────────────────────────
     let status: string;
     if (result.timedOut) {
       status = 'timeout';
@@ -70,7 +67,6 @@ export async function processCodeExecution(job: Job<ExecutionJobData>): Promise<
       status = 'completed';
     }
 
-    // ── Store Results ─────────────────────────────────────
     await Submission.findByIdAndUpdate(submissionId, {
       status,
       stdout: result.stdout,
@@ -81,7 +77,6 @@ export async function processCodeExecution(job: Job<ExecutionJobData>): Promise<
 
     console.log(`📊 Submission ${submissionId}: ${status} (${result.executionTimeMs}ms)`);
   } catch (error: any) {
-    // ── Handle Unexpected Errors ──────────────────────────
     console.error(`💥 Submission ${submissionId} error:`, error.message);
 
     await Submission.findByIdAndUpdate(submissionId, {

@@ -4,7 +4,6 @@
 # Deploy to Render with: render blueprint apply
 
 services:
-  # ── Backend API Server ───────────────────────────────────
   - type: web
     name: cloudexecx-backend
     runtime: node
@@ -28,7 +27,6 @@ services:
         sync: false
     healthCheckPath: /api/health
 
-  # ── Worker Service ───────────────────────────────────────
   - type: worker
     name: cloudexecx-worker
     runtime: docker

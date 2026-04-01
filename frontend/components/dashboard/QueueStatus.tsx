@@ -6,11 +6,9 @@ import { Activity, Clock, CheckCircle2, XCircle, RefreshCw } from 'lucide-react'
 import { useAuth } from '@clerk/nextjs';
 import { getQueueStatus, type QueueStatus } from '@/lib/api';
 
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 const POLL_INTERVAL_MS = 5000;
 
-// ─── Stat config ──────────────────────────────────────────────────────────────
 
 const STATS = [
   {
@@ -51,7 +49,6 @@ const STATS = [
   },
 ] as const;
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function QueueStatusPanel() {
   const { getToken } = useAuth();
@@ -85,7 +82,6 @@ export default function QueueStatusPanel() {
     setIsRetrying(false);
   };
 
-  // ── Error state ──────────────────────────────────────────────────────────────
   if (hasError && !queueStatus) {
     return (
       <div className="rounded-xl border border-[#1a2a3a] p-4 bg-[#0d1520] flex items-center justify-between gap-3">
@@ -105,7 +101,6 @@ export default function QueueStatusPanel() {
     );
   }
 
-  // ── Loading skeleton ─────────────────────────────────────────────────────────
   if (!queueStatus) {
     return (
       <div className="rounded-xl border border-[#1a2a3a] p-4 bg-[#0d1520] flex items-center gap-2">
@@ -121,7 +116,6 @@ export default function QueueStatusPanel() {
     );
   }
 
-  // ── Loaded ───────────────────────────────────────────────────────────────────
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}

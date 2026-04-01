@@ -35,7 +35,6 @@ function parseRedisUrl(url: string) {
 }
 
 async function startWorker() {
-  // ── Connect to MongoDB ──────────────────────────────────
   const mongoUri = process.env.MONGODB_URI;
   if (!mongoUri) throw new Error('MONGODB_URI is required');
   
@@ -45,18 +44,15 @@ async function startWorker() {
   });
   console.log('📦 Worker connected to MongoDB');
 
-  // ── Connect to Redis ────────────────────────────────────
   const redisUrl = process.env.UPSTASH_REDIS_URL;
   if (!redisUrl) throw new Error('UPSTASH_REDIS_URL is required');
 
   const connectionOptions = parseRedisUrl(redisUrl);
 
-  // ── Worker Concurrency ──────────────────────────────────
   // Configurable via environment variable for scaling simulation.
   // Increase WORKER_CONCURRENCY to simulate adding more "instances".
   const concurrency = parseInt(process.env.WORKER_CONCURRENCY || '2');
 
-  // ── Start BullMQ Worker ─────────────────────────────────
   const worker = new Worker(
     QUEUE_NAME,
     processCodeExecution,
@@ -69,7 +65,6 @@ async function startWorker() {
     }
   );
 
-  // ── Worker Event Handlers ───────────────────────────────
   worker.on('completed', (job) => {
     console.log(`✅ Job ${job.id} completed [${job.data.language}]`);
   });
@@ -89,7 +84,6 @@ async function startWorker() {
   console.log(`🔧 Worker started with concurrency: ${concurrency}`);
   console.log('👂 Listening for jobs...');
 
-  // ── Graceful Shutdown ───────────────────────────────────
   const shutdown = async () => {
     console.log('\n🛑 Shutting down worker...');
     await worker.close();

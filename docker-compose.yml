@@ -7,7 +7,6 @@
 version: '3.8'
 
 services:
-  # ── Backend API Server ───────────────────────────────────
   backend:
     build:
       context: ./backend
@@ -22,7 +21,6 @@ services:
       - execution-images
     restart: unless-stopped
 
-  # ── Worker Service ───────────────────────────────────────
   worker:
     build:
       context: ./worker
@@ -38,7 +36,6 @@ services:
       - execution-images
     restart: unless-stopped
 
-  # ── Build Execution Images ──────────────────────────────
   # This service just builds the sandbox images and exits.
   execution-images:
     image: docker:24-cli

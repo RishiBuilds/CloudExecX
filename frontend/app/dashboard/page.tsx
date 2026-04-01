@@ -10,7 +10,6 @@ import QueueStatusPanel from '@/components/dashboard/QueueStatus';
 import { executeCode, pollSubmissionStatus } from '@/lib/api';
 import { getLanguageLabel } from '@/lib/utils';
 
-// ─── Monaco dynamic import ────────────────────────────────────────────────────
 
 const CodeEditor = dynamic(() => import('@/components/editor/CodeEditor'), {
   ssr: false,
@@ -32,7 +31,6 @@ const CodeEditor = dynamic(() => import('@/components/editor/CodeEditor'), {
   ),
 });
 
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 const BOILERPLATE: Record<string, string> = {
   python: `# Python 3.11\nprint("Hello, World!")\n`,
@@ -53,7 +51,6 @@ const POLL_INTERVAL_MS = 500;
 const POLL_INITIAL_DELAY_MS = 300;
 const POLL_TIMEOUT_MS = 30_000;
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
   const { getToken } = useAuth();
@@ -93,7 +90,6 @@ export default function DashboardPage() {
     };
   }, []);
 
-  // ── Handlers ────────────────────────────────────────────────────────────────
 
   const clearOutput = () => {
     setStdout('');
@@ -183,12 +179,10 @@ export default function DashboardPage() {
     }
   }, [code, language, isRunning, getToken]);
 
-  // ── Render ──────────────────────────────────────────────────────────────────
 
   return (
     <div className="h-[calc(100vh-4rem)] flex flex-col lg:flex-row p-4 gap-4 bg-[#080c10]">
 
-      {/* ── Left: Editor (70%) ── */}
       <div className="flex-[7] flex flex-col gap-3 min-h-0">
 
         {/* Toolbar */}
@@ -295,7 +289,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Right: Output + Queue (30%) ── */}
       <div className="flex-[3] flex flex-col gap-3 min-h-0 lg:min-h-full">
         <div className="flex-1 min-h-0">
           <OutputConsole

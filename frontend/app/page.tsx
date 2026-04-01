@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Shield, Zap, Layers, Code2 } from 'lucide-react';
 
-// ─── Data ─────────────────────────────────────────────────────────────────────
 
 const FEATURES: Array<{
   icon: ElementType;
@@ -51,7 +50,6 @@ const STATS: Array<{
   { value: '$0',      label: 'forever', accent: true },
 ];
 
-// ─── Animation variants ───────────────────────────────────────────────────────
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -63,13 +61,11 @@ const stagger = {
   show:   { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
 };
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
   return (
     <div className="relative bg-[#080c10] text-[#f0f4f8] overflow-hidden">
 
-      {/* ── Background ── */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -82,7 +78,6 @@ export default function HomePage() {
       />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(0,255,136,0.06)_0%,transparent_70%)]" />
 
-      {/* ── Hero ── */}
       <section className="relative z-10 max-w-[1100px] mx-auto px-6 lg:px-10 pt-20 pb-16 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
         {/* Left copy */}
@@ -238,7 +233,6 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* ── Features ── */}
       <section className="relative z-10 max-w-[1100px] mx-auto px-6 lg:px-10 pb-24">
         <div className="border-t border-[#1a2a3a] pt-14">
           <p className="font-mono text-[10px] text-[#2a3f52] uppercase tracking-[2px] mb-10">
@@ -280,7 +274,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Footer ── */}
       <footer className="relative z-10 border-t border-[#1a2a3a] px-6 lg:px-10 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <span className="font-mono text-[11px] text-[#2a3f52]">© 2026 CloudExecX</span>
         <div className="flex items-center gap-2">

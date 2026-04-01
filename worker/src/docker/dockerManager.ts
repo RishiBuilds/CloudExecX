@@ -70,7 +70,6 @@ export async function executeInDocker(
   let container: Docker.Container | null = null;
 
   try {
-    // ── Create Container ──────────────────────────────────
     // SECURITY: This is where all isolation is configured.
     container = await docker.createContainer({
       Image: image,
@@ -126,7 +125,6 @@ export async function executeInDocker(
       Tty: false,
     });
 
-    // ── Start Container & Capture Output ──────────────────
     const startTime = Date.now();
     
     // Attach to streams before starting
@@ -156,7 +154,6 @@ export async function executeInDocker(
     // Start the container
     await container.start();
 
-    // ── Timeout Enforcement ───────────────────────────────
     // Race between container completion and 5-second timeout
     let timedOut = false;
     const timeoutPromise = new Promise<void>((resolve) => {
@@ -184,7 +181,6 @@ export async function executeInDocker(
     // Give streams a moment to flush
     await new Promise((resolve) => setTimeout(resolve, 100));
 
-    // ── Truncate output to prevent MongoDB bloat ──────────
     const maxOutputLen = 10_000;
     if (stdout.length > maxOutputLen) {
       stdout = stdout.slice(0, maxOutputLen) + '\n... [output truncated]';
@@ -203,7 +199,6 @@ export async function executeInDocker(
       timedOut,
     };
   } catch (error: any) {
-    // ── Cleanup on Error ──────────────────────────────────
     // Ensure container is removed even if execution fails
     if (container) {
       try {

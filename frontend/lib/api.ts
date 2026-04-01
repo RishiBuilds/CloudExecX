@@ -36,7 +36,6 @@ async function fetchAPI<T>(
   return response.json();
 }
 
-// ── Execute API ──────────────────────────────────────────
 
 export interface ExecuteRequest {
   code: string;
@@ -59,7 +58,6 @@ export async function executeCode(
   }, token);
 }
 
-// ── Submissions API ──────────────────────────────────────
 
 export interface Submission {
   _id: string;
@@ -108,7 +106,6 @@ export async function pollSubmissionStatus(
   return fetchAPI<Submission>(`/api/submissions/${id}/status`, {}, token);
 }
 
-// ── Queue API ────────────────────────────────────────────
 
 export interface QueueStatus {
   waiting: number;

@@ -11,12 +11,10 @@
  *  5. Base resets           → sensible defaults
  */
 
-/* ── 1. Tailwind ──────────────────────────────────────────────────────────── */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ── 2. Font variable wiring ─────────────────────────────────────────────── */
 /*
  * next/font injects --font-display, --font-sans, --font-mono on <html>.
  * These @layer base rules wire them into Tailwind's font-family utilities
@@ -31,7 +29,6 @@
   }
 }
 
-/* ── 3. CSS design tokens ────────────────────────────────────────────────── */
 /*
  * All colour and surface values live here as CSS variables.
  * Components reference these variables (e.g. var(--card-bg)) so that
@@ -45,7 +42,6 @@
  *   --accent-*   → secondary accent colour (teal/cyan)
  */
 @layer base {
-  /* ── Dark theme (default) ──────────────────────────────────────────────── */
   :root,
   .dark {
     /* Backgrounds */
@@ -79,7 +75,6 @@
     --scrollbar-track: #0d0d14;
   }
 
-  /* ── Light theme ───────────────────────────────────────────────────────── */
   .light {
     --bg-primary:    #f8fafc;
     --bg-secondary:  #ffffff;
@@ -107,7 +102,6 @@
   }
 }
 
-/* ── 4. Theme-switch transition suppression ──────────────────────────────── */
 /*
  * PROBLEM: If CSS transitions are active when next-themes toggles the `class`
  * attribute on <html>, every colour property animates from the old theme to
@@ -131,7 +125,6 @@
   transition: none !important;
 }
 
-/* ── 5. Base resets ──────────────────────────────────────────────────────── */
 @layer base {
   /* Smooth scrolling — respects prefers-reduced-motion */
   html {

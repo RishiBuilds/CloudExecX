@@ -20,7 +20,6 @@ executeRouter.post('/', requireAuthentication, async (req: Request, res: Respons
     const userId = getUserId(req);
     const { code, language } = req.body;
 
-    // ── Input Validation ────────────────────────────────
     if (!code || typeof code !== 'string') {
       return res.status(400).json({
         error: 'ValidationError',
@@ -48,7 +47,6 @@ executeRouter.post('/', requireAuthentication, async (req: Request, res: Respons
     // Sanitize: remove null bytes
     const sanitizedCode = code.replace(/\0/g, '');
 
-    // ── Create Submission Record ────────────────────────
     const submission = await Submission.create({
       userId,
       code: sanitizedCode,
@@ -56,7 +54,6 @@ executeRouter.post('/', requireAuthentication, async (req: Request, res: Respons
       status: 'queued',
     });
 
-    // ── Enqueue Job ─────────────────────────────────────
     const queue = getQueue();
     await queue.add(
       'execute-code',

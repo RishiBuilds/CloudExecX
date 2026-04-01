@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { Code2, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// ─── Nav config ──────────────────────────────────────────────────────────────
 // Add items here — sidebar and mobile nav both derive from this single source.
 
 const NAV_ITEMS = [
@@ -23,7 +22,6 @@ const NAV_ITEMS = [
   },
 ] as const;
 
-// ─── Layout ──────────────────────────────────────────────────────────────────
 
 export default function DashboardLayout({
   children,
@@ -35,7 +33,6 @@ export default function DashboardLayout({
   return (
     <div className="flex min-h-[calc(100vh-4rem)] bg-[#080c10]">
 
-      {/* ── Desktop Sidebar ── */}
       <aside className="hidden lg:flex flex-col w-52 shrink-0 border-r border-[#1a2a3a] bg-[#0d1520]">
 
         {/* Sidebar brand strip */}
@@ -111,13 +108,11 @@ export default function DashboardLayout({
         </div>
       </aside>
 
-      {/* ── Main content ── */}
       {/* pb-16 on mobile gives space above the fixed bottom nav */}
       <div className="flex-1 overflow-hidden pb-16 lg:pb-0">
         {children}
       </div>
 
-      {/* ── Mobile Bottom Nav ── */}
       <nav
         aria-label="Dashboard navigation"
         className="lg:hidden fixed bottom-0 left-0 right-0 z-50 flex border-t border-[#1a2a3a] bg-[#0d1520]"

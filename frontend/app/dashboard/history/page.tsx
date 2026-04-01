@@ -19,7 +19,6 @@ import { getSubmissions, type Submission, type PaginatedSubmissions } from '@/li
 import SubmissionCard from '@/components/dashboard/SubmissionCard';
 import { getLanguageLabel } from '@/lib/utils';
 
-// ─── Constants ───────────────────────────────────────────────────────────────
 
 const LANGUAGES = ['all', 'python', 'javascript', 'cpp'] as const;
 type LangFilter = (typeof LANGUAGES)[number];
@@ -31,7 +30,6 @@ const LANG_LABELS: Record<string, string> = {
   cpp: 'C++',
 };
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatRelativeTime(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -43,7 +41,6 @@ function formatRelativeTime(dateStr: string) {
   return `${Math.floor(hrs / 24)}d ago`;
 }
 
-// ─── Sub-components ──────────────────────────────────────────────────────────
 
 function EmptyState({ filtered }: { filtered: boolean }) {
   return (
@@ -215,7 +212,6 @@ function DetailModal({
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function HistoryPage() {
   const { getToken } = useAuth();
@@ -258,7 +254,6 @@ export default function HistoryPage() {
   return (
     <div className="h-[calc(100vh-4rem)] flex flex-col bg-[#080c10] overflow-hidden">
 
-      {/* ── Header ── */}
       <motion.div
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -303,7 +298,6 @@ export default function HistoryPage() {
         </div>
       </motion.div>
 
-      {/* ── Content ── */}
       <div className="flex-1 overflow-auto px-6 py-5">
         {isLoading ? (
           <div className="flex flex-col items-center justify-center h-64 gap-3">
@@ -344,7 +338,6 @@ export default function HistoryPage() {
         )}
       </div>
 
-      {/* ── Pagination ── */}
       {data && data.totalPages > 1 && (
         <div className="shrink-0 flex items-center justify-between px-6 py-3 border-t border-[#1a2a3a]">
           <button
@@ -387,7 +380,6 @@ export default function HistoryPage() {
         </div>
       )}
 
-      {/* ── Detail Modal ── */}
       <AnimatePresence>
         {selectedSubmission && (
           <DetailModal

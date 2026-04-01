@@ -7,14 +7,12 @@ import { Menu, X } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
-// ─── Nav links (shown when signed in) ────────────────────────────────────────
 
 const NAV_LINKS = [
   { href: '/dashboard',         label: 'Editor' },
   { href: '/dashboard/history', label: 'History' },
 ] as const;
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -59,7 +57,6 @@ export default function Navbar() {
     >
       <div className="max-w-[1100px] mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
 
-        {/* ── Logo ── */}
         <Link href="/" className="flex items-center gap-2.5 group">
           <div className="w-7 h-7 bg-[#00ff88] rounded-md flex items-center justify-center shrink-0 group-hover:opacity-90 transition-opacity">
             <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
@@ -73,7 +70,6 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* ── Desktop nav ── */}
         <div className="hidden md:flex items-center gap-1">
           <SignedIn>
             {NAV_LINKS.map(({ href, label }) => {
@@ -95,7 +91,6 @@ export default function Navbar() {
           </SignedIn>
         </div>
 
-        {/* ── Desktop auth ── */}
         <div className="hidden md:flex items-center gap-3">
           <SignedOut>
             <Link
@@ -124,7 +119,6 @@ export default function Navbar() {
           </SignedIn>
         </div>
 
-        {/* ── Mobile menu button ── */}
         <button
           className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center text-[#4a6177] hover:text-[#f0f4f8] hover:bg-[#1a2a3a] transition-colors"
           onClick={() => setMobileOpen((v) => !v)}
@@ -135,7 +129,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* ── Mobile menu ── */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div

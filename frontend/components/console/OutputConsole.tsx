@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Check, Clock, AlertTriangle, Terminal, CheckCircle2, XCircle } from 'lucide-react';
 import { useState } from 'react';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface OutputConsoleProps {
   stdout: string;
@@ -14,7 +13,6 @@ interface OutputConsoleProps {
   isLoading: boolean;
 }
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function formatExecTime(ms: number): string {
   if (ms < 1000) return `${ms}ms`;
@@ -41,7 +39,6 @@ async function copyToClipboard(text: string): Promise<boolean> {
   }
 }
 
-// ─── Status pill ─────────────────────────────────────────────────────────────
 
 function StatusPill({ status }: { status: string }) {
   if (!status || status === 'queued' || status === 'processing' || status === 'running') return null;
@@ -75,7 +72,6 @@ function StatusPill({ status }: { status: string }) {
   );
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function OutputConsole({
   stdout,
@@ -102,7 +98,6 @@ export default function OutputConsole({
   return (
     <div className="h-full flex flex-col rounded-xl overflow-hidden border border-[#1a2a3a] bg-[#080c10]">
 
-      {/* ── Header ── */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-[#1a2a3a] bg-[#0d1520] shrink-0">
         <div className="flex items-center gap-2.5">
           <Terminal className="w-3.5 h-3.5 text-[#00ff88]" />
@@ -146,7 +141,6 @@ export default function OutputConsole({
         )}
       </div>
 
-      {/* ── Body ── */}
       <div className="flex-1 overflow-auto p-4 font-mono text-[12px] leading-[1.8]">
         <AnimatePresence mode="wait">
 

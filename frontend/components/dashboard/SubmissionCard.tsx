@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { Code2, Clock, CheckCircle2, XCircle, Timer, AlertTriangle } from 'lucide-react';
 import type { Submission } from '@/lib/api';
 
-// ─── Helpers (self-contained, no external util dependency) ───────────────────
 
 function formatExecTime(ms: number): string {
   if (ms < 1000) return `${ms}ms`;
@@ -30,7 +29,6 @@ function getLanguageLabel(lang: string): string {
   return map[lang] ?? lang;
 }
 
-// ─── Status config — single source of truth ───────────────────────────────────
 
 const STATUS_CONFIG = {
   completed: {
@@ -74,7 +72,6 @@ const STATUS_CONFIG = {
 
 type StatusKey = keyof typeof STATUS_CONFIG;
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
 interface SubmissionCardProps {
   submission: Submission;

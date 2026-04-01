@@ -4,7 +4,6 @@ import { useRef, useCallback } from 'react';
 import Editor, { OnMount, BeforeMount } from '@monaco-editor/react';
 import type * as Monaco from 'monaco-editor';
 
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 // Canonical boilerplate — single source of truth (imported by DashboardPage)
 export const BOILERPLATE: Record<string, string> = {
@@ -22,7 +21,6 @@ const MONACO_LANG: Record<string, string> = {
 
 const THEME_NAME = 'cloudexecx-dark';
 
-// ─── Custom Monaco theme ──────────────────────────────────────────────────────
 // Defined as a constant so it's not recreated on every render.
 // Matches the #080c10 design system exactly.
 
@@ -110,7 +108,6 @@ const THEME_DATA: Monaco.editor.IStandaloneThemeData = {
   },
 };
 
-// ─── Props ────────────────────────────────────────────────────────────────────
 
 interface CodeEditorProps {
   language: string;
@@ -119,7 +116,6 @@ interface CodeEditorProps {
   readOnly?: boolean;
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
 
 export default function CodeEditor({
   language,

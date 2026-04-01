@@ -6,7 +6,6 @@ import { ThemeProvider } from '@/components/ui/ThemeProvider';
 import Navbar from '@/components/ui/Navbar';
 import '@/styles/globals.css';
 
-// ─── Fonts ───────────────────────────────────────────────────────────────────
 
 const syne = Syne({
   subsets: ['latin'],
@@ -22,7 +21,6 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
 });
 
-// ─── Metadata ────────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = {
   title: {
@@ -43,7 +41,6 @@ export const viewport: Viewport = {
   themeColor: '#080c10',
 };
 
-// ─── Layout ──────────────────────────────────────────────────────────────────
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

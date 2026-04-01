@@ -24,7 +24,6 @@
    ============================================================ */
 
 @theme {
-  /* ── Color Palette ────────────────────────────────────── */
   --color-brand-50: oklch(0.97 0.02 260);
   --color-brand-100: oklch(0.93 0.04 260);
   --color-brand-200: oklch(0.86 0.08 260);
@@ -43,21 +42,17 @@
   --color-error: oklch(0.63 0.22 25);
   --color-warning: oklch(0.78 0.18 75);
 
-  /* ── Typography ───────────────────────────────────────── */
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
 
-  /* ── Shadows ──────────────────────────────────────────── */
   --shadow-glow: 0 0 20px oklch(0.55 0.22 260 / 0.3);
   --shadow-glow-lg: 0 0 40px oklch(0.55 0.22 260 / 0.4);
 
-  /* ── Animations ───────────────────────────────────────── */
   --animate-fade-in: fade-in 0.5s ease-out;
   --animate-slide-up: slide-up 0.5s ease-out;
   --animate-pulse-glow: pulse-glow 2s ease-in-out infinite;
 }
 
-/* ── CSS Variables for Dark/Light Mode ──────────────────── */
 :root {
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
@@ -86,7 +81,6 @@
   --console-text: #cdd6f4;
 }
 
-/* ── Base Styles ────────────────────────────────────────── */
 body {
   font-family: var(--font-sans);
   background: var(--bg-primary);
@@ -95,7 +89,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Scrollbar ──────────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -111,7 +104,6 @@ body {
   background: var(--text-secondary);
 }
 
-/* ── Keyframes ──────────────────────────────────────────── */
 @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -132,7 +124,6 @@ body {
   51%, 100% { opacity: 0; }
 }
 
-/* ── Glass Effect ───────────────────────────────────────── */
 .glass {
   background: oklch(1 0 0 / 0.05);
   backdrop-filter: blur(12px);
@@ -144,7 +135,6 @@ body {
   border: 1px solid oklch(1 0 0 / 0.06);
 }
 
-/* ── Terminal Cursor ────────────────────────────────────── */
 .terminal-cursor::after {
   content: '▋';
   animation: terminal-blink 1s step-end infinite;
